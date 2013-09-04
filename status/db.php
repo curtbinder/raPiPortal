@@ -15,16 +15,38 @@
  * limitations under the License.
  */
  
+require "../masterconfig.php"
+
 # database class
 class raDB extends SQLite3 {
+
+	const VERSION = 1;
+
     function __construct() {
         $this->open('reefangel.db');
     }
+    
+	private static $pcolumns = array(
+		't1', 't2', 't3', 'ph', 'atohigh', 'atolow', 'rdata', 'ronmask', 'roffmask',
+		'r1data', 'r1onmask', 'r1offmask', 'r2data', 'r2onmask', 'r2offmask',
+		'r3data', 'r3onmask', 'r3offmask', 'r4data', 'r4onmask', 'r4offmask',
+		'r5data', 'r5onmask', 'r5offmask', 'r6data', 'r6onmask', 'r6offmask',
+		'r7data', 'r7onmask', 'r7offmask', 'r8data', 'r8onmask', 'r8offmask',
+		'em', 'em1', 'rem', 'sal', 'orp', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5',
+		'c6', 'c7', 'flag', 'pwma', 'pwmd', 'pwme0', 'pwme1', 'pwme2', 'pwme3',
+		'pwme4', 'pwme5', 'rfm', 'rfs', 'rfd', 'rfw', 'rfrb', 'rfr', 'rfg', 'rfb',
+		'rfi', 'aiw', 'aib', 'airb', 'io', 'phe', 'wl', 'hum', 'dcm', 'dcs', 'dcd'
+	);
+	
+	public static function getParamsColumns() {
+		return self::$pcolumns;
+	}
 
     public function createTables() {
     	createParamsTable();
     	createLabelsTable();
     	createDevicesTable();
+    	createSiteTable();
     }
     
     private function createParamsTable() {
@@ -196,6 +218,70 @@ class raDB extends SQLite3 {
         	port integer default 2000, 
         	key text)');    
     }
+    
+    private function createSiteTable() {
+    	$this->exec('CREATE TABLE site(
+    		portal_version text,
+    		db_version integer,
+    		creation text)');
+    }
+    
+    public function checkPortalCreated() {
+    	// check if the portal is created and configured
+    	// we check for an entry in the site table
+    	// if it does not exist, then we will create it along with all the tables
+    	$result = $this->query('SELECT * FROM site');
+    	if ( !$result ) {
+    		// no tables, so create the portal
+    		createTables();
+    		$this->exec("INSERT INTO site (portal_version, db_version, creation) VALUES
+    		 ('PORTAL_VERSION','$this::VERSION',datetime('now'))");
+    	}
+    }
+    
+    public function getDatabaseVersion() {
+    	// returns the database version
+    	// useful for upgrading the database
+    }
+    
+    public function getPortalVersion() {
+    	// returns the portal version
+    	// useful for upgrading the portal software
+    }
+
+	//public function getLatestData($id) {
+	//}
+	
+	public function isValidDevice($id, $key) {
+		// must have an open database connection prior to calling
+		$st = $this->prepare('SELECT id, key FROM devices WHERE id = :id');
+		$st->bindValue(':id', $id);
+		$result = $st->execute();
+		if ( $result->numColumns() > 0 ) {
+			// we have a device, compare keys
+			if ( empty($key) ) {
+				return true;
+			} else {
+				$row = $result->fetchArray();
+				if ( strcmp($key, $row[1]) == 0 ) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public function insertParameters($c, $v) {
+		$st = "INSERT INTO params ($c) VALUES ($v)";
+		$this->exec($st);
+	}
+	
+	public function updateDeviceLastIP($id, $ip) {
+		$st = SQLite3::escapeString("UPDATE devices SET ip = '$ip' WHERE id = '$id'");
+		$this->exec($st);
+	}
 
 }
 
