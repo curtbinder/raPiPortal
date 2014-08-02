@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-require "status/db.php"
-require "masterconfig.php"
+require "status/db.php";
+require "masterconfig.php";
 //include "config.php"  // overrides master settings
 // improve a way to update settings for the end user
-require "common.php"
+require "common.php";
 
 // Test for database
 $db = new raDB();

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
  
-require "../masterconfig.php"
+//require "../masterconfig.php";
 
 # database class
 class raDB extends SQLite3 {
@@ -46,10 +46,10 @@ class raDB extends SQLite3 {
 	}
 
     public function createTables() {
-    	createParamsTable();
-    	createLabelsTable();
-    	createDevicesTable();
-    	createSiteTable();
+    	$this->createParamsTable();
+    	$this->createLabelsTable();
+    	$this->createDevicesTable();
+    	$this->createSiteTable();
     }
     
     private function createParamsTable() {
@@ -298,9 +298,9 @@ class raDB extends SQLite3 {
     	$result = $this->query('SELECT * FROM site');
     	if ( !$result ) {
     		// no tables, so create the portal
-    		createTables();
+    		$this->createTables();
     		$this->exec("INSERT INTO site (portal_version, db_version, creation) VALUES
-    		 ('PORTAL_VERSION','$this::VERSION',datetime('now'))");
+    		 ('PORTAL_VERSION','self::VERSION',datetime('now'))");
     	}
     }
     

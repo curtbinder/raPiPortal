@@ -17,8 +17,6 @@
 
 function htmlOpen($title) {
 	print <<<EOF
-Content-type: text/html
-
 <html>
 <head><title>$title</title></head>
 <link rel="stylesheet" href="/style.css" type="text/css">
@@ -34,17 +32,17 @@ EOF;
 }
 
 function displayHeader($text) {
-    echo "<table><tr>";
+    echo "\n<table><tr>\n";
     //echo "<td><img src='' alt='curtbinder logo'/></td>";
-    echo "<td valign=center><span class='textbg'>$text</span></td>";
-    echo "</tr></table>";
+    echo "<td valign=center><span class='textbg'>$text</span></td>\n";
+    echo "</tr></table>\n";
 }
 
 function displayFooter($title, $version) {
-    echo "<br>";
-    echo "<table><tr align='center'>";
-    echo "<td><span class='copyright'>$title - Version $version</span></td>";
-    echo "</tr></table>";
+    echo "<br>\n";
+    echo "<table><tr align='center'>\n";
+    echo "<td><span class='copyright'>$title - Version $version</span></td>\n";
+    echo "</tr></table>\n";
 }
 
 ?>
