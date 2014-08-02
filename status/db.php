@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 //require "../masterconfig.php";
 
 # database class
@@ -25,22 +25,22 @@ class raDB extends SQLite3 {
     function __construct() {
         $this->open('reefangel.db');
     }
-    
+
 	private static $pcolumns = array(
-		't1', 't2', 't3', 'ph', 'pwma', 'pwmao', 'pwmd', 'pwmdo', 
+		't1', 't2', 't3', 'ph', 'pwma', 'pwmao', 'pwmd', 'pwmdo',
 		'atohigh', 'atolow', 'sal', 'orp', 'rdata', 'ronmask', 'roffmask',
 		'r1data', 'r1onmask', 'r1offmask', 'r2data', 'r2onmask', 'r2offmask',
 		'r3data', 'r3onmask', 'r3offmask', 'r4data', 'r4onmask', 'r4offmask',
 		'r5data', 'r5onmask', 'r5offmask', 'r6data', 'r6onmask', 'r6offmask',
 		'r7data', 'r7onmask', 'r7offmask', 'r8data', 'r8onmask', 'r8offmask',
-		'pwme0', 'pwme1', 'pwme2', 'pwme3', 'pwme4', 'pwme5', 'pwme0o', 
-		'pwme1o', 'pwme2o', 'pwme3o', 'pwme4o', 'pwme5o', 'aiw', 'aib', 
-		'airb', 'aiwo', 'aibo', 'airbo', 'rfm', 'rfs', 'rfd', 'rfw', 'rfrb', 
-		'rfr', 'rfg', 'rfb', 'rfi', 'rfwo', 'rfrbo', 'rfro', 'rfgo', 'rfbo', 
-		'rfio', 'io', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'em', 
+		'pwme0', 'pwme1', 'pwme2', 'pwme3', 'pwme4', 'pwme5', 'pwme0o',
+		'pwme1o', 'pwme2o', 'pwme3o', 'pwme4o', 'pwme5o', 'aiw', 'aib',
+		'airb', 'aiwo', 'aibo', 'airbo', 'rfm', 'rfs', 'rfd', 'rfw', 'rfrb',
+		'rfr', 'rfg', 'rfb', 'rfi', 'rfwo', 'rfrbo', 'rfro', 'rfgo', 'rfbo',
+		'rfio', 'io', 'c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'em',
 		'em1', 'rem', 'phe', 'wl', 'wl1', 'wl2', 'wl3', 'wl4', 'hum', 'af', 'sf'
 	);
-	
+
 	public static function getParamsColumns() {
 		return self::$pcolumns;
 	}
@@ -51,7 +51,7 @@ class raDB extends SQLite3 {
     	$this->createDevicesTable();
     	$this->createSiteTable();
     }
-    
+
     private function createParamsTable() {
         $this->exec('CREATE TABLE params(autoid integer primary key autoincrement,
         	id text,
@@ -149,9 +149,9 @@ class raDB extends SQLite3 {
         	hum integer,
 			af,
 			sf
-        	)');    
+        	)');
     }
-    
+
     private function createLabelsTable() {
         $this->exec('CREATE TABLE labels(autoid integer primary key autoincrement,
         	id text,
@@ -275,22 +275,22 @@ class raDB extends SQLite3 {
 
         	)');
     }
-    
+
     private function createDevicesTable() {
         $this->exec('CREATE TABLE devices(autoid integer primary key autoincrement,
-        	id text, 
-        	ip text, 
-        	port integer default 2000, 
-        	key text)');    
+        	id text,
+        	ip text,
+        	port integer default 2000,
+        	key text)');
     }
-    
+
     private function createSiteTable() {
     	$this->exec('CREATE TABLE site(
     		portal_version text,
     		db_version integer,
     		creation text)');
     }
-    
+
     public function checkPortalCreated() {
     	// check if the portal is created and configured
     	// we check for an entry in the site table
@@ -303,12 +303,12 @@ class raDB extends SQLite3 {
     		 ('PORTAL_VERSION','self::VERSION',datetime('now'))");
     	}
     }
-    
+
     public function getDatabaseVersion() {
     	// returns the database version
     	// useful for upgrading the database
     }
-    
+
     public function getPortalVersion() {
     	// returns the portal version
     	// useful for upgrading the portal software
@@ -316,13 +316,35 @@ class raDB extends SQLite3 {
 
 	//public function getLatestData($id) {
 	//}
-	
+
+	public function displayAllDevices() {
+		$result = $this->query('SELECT id, ip, port FROM devices');
+		// DB::iserror($result)
+		// print header
+		$count = 0;
+		printDevicesHeader();
+		//if ( $this->hasRows($result) ) {
+			while ( $row = $result->fetchArray() ) {
+				// print row
+				//printDeviceRow($row);
+				echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td></tr>\n";
+				$count++;
+			}
+		//} else {
+		if ( $count == 0 ) {
+			echo "<tr><td colspan=3>No Devices</td></tr>";
+		}
+		//}
+		// print footer
+		printDevicesFooter();
+	}
+
 	public function isValidDevice($id, $key) {
 		// must have an open database connection prior to calling
-		$st = $this->prepare('SELECT id, key FROM devices WHERE id = :id');
+		$st = $this->prepare("SELECT id, key FROM devices WHERE id = :id");
 		$st->bindValue(':id', $id);
 		$result = $st->execute();
-		if ( $result->numColumns() > 0 ) {
+		if ( $this->hasRows($result)) {
 			// we have a device, compare keys
 			if ( empty($key) ) {
 				return true;
@@ -337,17 +359,45 @@ class raDB extends SQLite3 {
 		}
 		return false;
 	}
-	
+
+	public function hasRows($result) {
+		// since numRows is not available, use this function
+		// when there are 0 rows, sqlite3 functions return:
+		//   fetchArray returns '1'
+		//   numColumns returns '1'
+		//   column type for column '0' will be SQLITE3_NULL
+		if ( $result->numColumns() && $result->columnType(0) != SQLITE3_NULL ) {
+			return true;
+		}
+		return false;
+	}
+
 	public function insertParameters($c, $v) {
 		$st = "INSERT INTO params ($c) VALUES ($v)";
 		$this->exec($st);
 	}
-	
+
 	public function updateDeviceLastIP($id, $ip) {
 		$st = SQLite3::escapeString("UPDATE devices SET ip = '$ip' WHERE id = '$id'");
 		$this->exec($st);
 	}
 
+	public function addDevice($device, $host, $port) {
+		$st = "INSERT INTO devices (id, ip, port) VALUES ('$device', '$host', '$port')";
+		$this->exec($st);
+	}
+
 }
 
+function printDevicesHeader() {
+	echo "<table><thead><tr><th>Device</th><th>Host / IP</th><th>Port</th></tr></thead>\n";
+}
+
+function printDeviceRow($row) {
+	echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td></tr>\n";
+}
+
+function printDevicesFooter() {
+	echo "</table>\n";
+}
 ?>

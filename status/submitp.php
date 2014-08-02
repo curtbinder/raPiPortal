@@ -24,7 +24,7 @@ to verify that the field 'key' matches what is stored in the database before
 we can update.
 */
 
-require "db.php";
+require_once('db.php');
 
 $id = $_GET["id"];
 $key = $_GET["key"];

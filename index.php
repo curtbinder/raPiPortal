@@ -21,10 +21,6 @@ require "masterconfig.php";
 // improve a way to update settings for the end user
 require "common.php";
 
-// Test for database
-$db = new raDB();
-$db->checkPortalCreated();
-$db->close();
 
 htmlOpen(PORTAL_NAME);
 
@@ -32,6 +28,16 @@ htmlOpen(PORTAL_NAME);
 displayHeader(PORTAL_NAME);
 
 // Create login form
+
+// Currently, just list all the devices on the site and then a form to add a new device
+// Test for database
+$db = new raDB();
+$db->checkPortalCreated();
+$db->displayAllDevices();
+$db->close();
+
+echo "<br><br><hr>\n";
+displayAddNewDeviceForm();
 
 displayFooter(PORTAL_NAME, PORTAL_VERSION);
 htmlClose();

@@ -45,4 +45,18 @@ function displayFooter($title, $version) {
     echo "</tr></table>\n";
 }
 
+function displayAddNewDeviceForm() {
+	print <<<EOF
+<form action='adddevice.php' method='post'>
+<table>
+	<thead><tr><th colspan=2>Add New Device</th></tr></thead>
+	<tr><td align='left'>Device Name</td><td><input type='text' name='device'></td></tr>
+	<tr><td align='left'>Host / IP</td><td><input type='text' name='host'></td></tr>
+	<tr><td align='left'>Port (default 2000)</td><td><input type='text' name='port'></td></tr>
+	<tr><td align='right' colspan=2><input type='submit' value='Add'></td></tr>
+</table>
+</form>
+EOF;
+}
+
 ?>
