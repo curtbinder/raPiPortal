@@ -34,6 +34,7 @@ $db = new raDB();
 
 if ( ! $db->isValidDevice($id, $key) ) {
 	// invalid device, print out failure
+	print "Invalid device";
 	die;
 }
 
@@ -64,6 +65,7 @@ foreach ($cols as $x) {
 if ( $count == 0 ) {
 	// no parameters
 	// print out error response
+	print "No parameters sent";
 	die;
 }
 $colstring .= ", logdate";
@@ -78,4 +80,5 @@ $db->updateDeviceLastIP(SQLite3::escapeString($id) , $_SERVER['REMOTE_ADDR']);
 $db->close();
 
 // send response string
+print "Success";
 ?>

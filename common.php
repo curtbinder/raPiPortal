@@ -21,14 +21,14 @@ function htmlOpen($title) {
 <head><title>$title</title></head>
 <link rel="stylesheet" href="/style.css" type="text/css">
 <body>
-EOF
+EOF;
 }
 
 function htmlClose() {
 	print <<<EOF
 </body>
 </html>
-EOF
+EOF;
 }
 
 function displayHeader($text) {
