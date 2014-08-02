@@ -17,6 +17,8 @@
 
 function htmlOpen($title) {
 	print <<<EOF
+Content-type: text/html
+
 <html>
 <head><title>$title</title></head>
 <link rel="stylesheet" href="/style.css" type="text/css">
