@@ -314,8 +314,9 @@ class raDB extends SQLite3 {
     	// useful for upgrading the portal software
     }
 
-	//public function getLatestData($id) {
-	//}
+	public function getLatestData($id) {
+
+	}
 
 	public function displayAllDevices() {
 		$result = $this->query('SELECT id, ip, port FROM devices');
@@ -326,7 +327,6 @@ class raDB extends SQLite3 {
 		//if ( $this->hasRows($result) ) {
 			while ( $row = $result->fetchArray() ) {
 				// print row
-				//printDeviceRow($row);
 				echo "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td></tr>\n";
 				$count++;
 			}
@@ -341,10 +341,12 @@ class raDB extends SQLite3 {
 
 	public function isValidDevice($id, $key) {
 		// must have an open database connection prior to calling
-		$st = $this->prepare("SELECT id, key FROM devices WHERE id = :id");
-		$st->bindValue(':id', $id);
-		$result = $st->execute();
-		if ( $this->hasRows($result)) {
+		//echo "id = " . $id . "<br>\n";
+		//echo "key = " . $key . "<br>\n";
+		$st = "SELECT id, key FROM devices WHERE id='$id'";
+		//echo "stmt = " . $st . "<br>\n";
+		$result = $this->query($st);
+		//if ( $this->hasRows($result)) {
 			// we have a device, compare keys
 			if ( empty($key) ) {
 				return true;
@@ -356,7 +358,7 @@ class raDB extends SQLite3 {
 					return false;
 				}
 			}
-		}
+		//}
 		return false;
 	}
 
@@ -374,11 +376,13 @@ class raDB extends SQLite3 {
 
 	public function insertParameters($c, $v) {
 		$st = "INSERT INTO params ($c) VALUES ($v)";
+		//echo "insert = " . $st . "<br>\n";
 		$this->exec($st);
 	}
 
 	public function updateDeviceLastIP($id, $ip) {
-		$st = SQLite3::escapeString("UPDATE devices SET ip = '$ip' WHERE id = '$id'");
+		$st = "UPDATE devices SET ip='$ip' WHERE id='$id'";
+		//echo "update ip = " . $st . "<br>\n";
 		$this->exec($st);
 	}
 

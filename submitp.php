@@ -27,7 +27,8 @@ we can update.
 require_once('db.php');
 
 $id = $_GET["id"];
-$key = $_GET["key"];
+//$key = $_GET["key"];
+$key = "";
 
 // open database connection
 $db = new raDB();

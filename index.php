@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-require "status/db.php";
+require "db.php";
 require "masterconfig.php";
 //include "config.php"  // overrides master settings
 // improve a way to update settings for the end user

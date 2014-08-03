@@ -1,6 +1,6 @@
 <?php
 
-require_once('status/db.php');
+require_once('db.php');
 
 $device = $_POST['device'];
 $host = $_POST['host'];
