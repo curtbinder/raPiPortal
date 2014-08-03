@@ -314,8 +314,9 @@ class raDB extends SQLite3 {
     	// useful for upgrading the portal software
     }
 
-	public function getLatestData($id) {
-
+	public function getLatestParams($id) {
+		$s = "select * from params where id='$id' order by logdate desc limit 1";
+		return $this->query($s);
 	}
 
 	public function displayAllDevices() {
