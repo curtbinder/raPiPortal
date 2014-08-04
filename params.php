@@ -21,6 +21,7 @@ $id = $_GET["id"];
 //$key = $_GET["key"];
 $key = "";
 
+// could use isset(VAR) instead of empty
 if ( empty($id) ) {
 	echo "Must provide a device ID\n";
 	die;
@@ -39,22 +40,25 @@ if ( ! $db->isValidDevice($id, $key) ) {
 We need to query the database for the values. Then we need to associate the values with
 the fields and construct the XML tags to be sent.
 */
-$response = "<RA>\n";
+$response = "<RA>";
 $result = $db->getLatestParams($id);
 $cols = $result->numColumns();
 $row = $result->fetchArray();
+$stripwords = array("MASK", "DATA");
 // loop through all the columns and get all the data
 for ( $i = 0; $i < $cols; $i++ ) {
-	if ( empty($row[$i]) ) {
+	if ( is_null($row[$i]) ) {
 		continue;
 	}
-	$tag = $result->columnName($i);
-	if ( strcmp($tag, "autoid") == 0 ) {
+	$tag = strtoupper($result->columnName($i));
+	$tag = str_replace($stripwords, "", $tag);
+	if ( strcmp($tag, "AUTOID") == 0 ) {
 		continue;
 	}
 	$value = "<" . $tag . ">" . $row[$i] . "</" . $tag . ">";
-	$response .= $value . "\n";
+	$response .= $value;
 }
+$db->close();
 // add the closing xml tag
 $response .= "</RA>";
 echo $response;

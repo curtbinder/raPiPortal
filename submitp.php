@@ -39,6 +39,15 @@ if ( ! $db->isValidDevice($id, $key) ) {
 	die;
 }
 
+if (isset($DEBUG)) {
+	$url = "";
+	foreach ($_GET as $name => $value ) {
+		$s = $name . ":" . $value . ",";
+		$url .= $s;
+	}
+	error_log($url);
+}
+
 /*
 loop through the columns array
 if the column exists in the GET array,
@@ -50,13 +59,19 @@ all incoming key/value pairs will be set, there will not be any NULL values
 if the values are NULL, then we won't be storing them anyways
 */
 $cols = $db->getParamsColumns();
+$linkedcols = $db->getLinkedColumns();
 $colstring = "id";
 $valstring = "'" . SQLite3::escapeString($id) . "'";
 $count = 0;
 foreach ($cols as $x) {
-	if ( isset($_GET[$x]) ) {
+	if ( array_key_exists($x, $linkedcols) ) {
+		$idx = $linkedcols[$x];
+	} else {
+		$idx = $x;
+	}
+	if ( isset($_GET[$idx]) ) {
 		$colstring .= ", " . $x;
-		$valstring .= ", '" . SQLite3::escapeString($_GET[$x]) . "'";
+		$valstring .= ", '" . SQLite3::escapeString($_GET[$idx]) . "'";
 		$count++;
 	}
 	// else skipped
@@ -66,11 +81,11 @@ foreach ($cols as $x) {
 if ( $count == 0 ) {
 	// no parameters
 	// print out error response
-	print "No parameters sent";
+	echo "No parameters sent";
 	die;
 }
 $colstring .= ", logdate";
-$valstring .= ", datetime('now')";
+$valstring .= ", datetime('now', 'localtime')";
 $db->insertParameters($colstring, $valstring);
 
 // update the database with the most recent IP address
@@ -81,5 +96,5 @@ $db->updateDeviceLastIP(SQLite3::escapeString($id) , $_SERVER['REMOTE_ADDR']);
 $db->close();
 
 // send response string
-print "Success";
+echo "Success";
 ?>

@@ -45,6 +45,40 @@ class raDB extends SQLite3 {
 		return self::$pcolumns;
 	}
 
+	private static $linkcolumns = array(
+		"rdata" => "r",
+		"ronmask" => "ron",
+		"roffmask" => "roff",
+		"r1data" => "r1",
+		"r1onmask" => "ron1",
+		"r1offmask" => "roff1",
+		"r2data" => "r2",
+		"r2onmask" => "ron2",
+		"r2offmask" => "roff2",
+		"r3data" => "r3",
+		"r3onmask" => "ron3",
+		"r3offmask" => "roff3",
+		"r4data" => "r4",
+		"r4onmask" => "ron4",
+		"r4offmask" => "roff4",
+		"r5data" => "r5",
+		"r5onmask" => "ron5",
+		"r5offmask" => "roff5",
+		"r6data" => "r6",
+		"r6onmask" => "ron6",
+		"r6offmask" => "roff6",
+		"r7data" => "r7",
+		"r7onmask" => "ron7",
+		"r7offmask" => "roff7",
+		"r8data" => "r8",
+		"r8onmask" => "ron8",
+		"r8offmask" => "roff8",
+	);
+
+	public static function getLinkedColumns() {
+		return self::$linkcolumns;
+	}
+
     public function createTables() {
     	$this->createParamsTable();
     	$this->createLabelsTable();
