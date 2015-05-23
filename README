@@ -2,3 +2,23 @@ Reef Angel Custom Portal
 
 Designed to be run on a raspberry pi.
 Created using PHP and SQLite3
+
+The files inside this repository are designed to be placed in the /status/ subfolder of the root of your webserver.
+
+To setup properly, inside the Reef Angel libraries you need to make the following changes:
+
+Open RA_Wifi.h
+Locate this line:  const prog_char BannerGET[] PROGMEM = "GET /status/submitp.php?t1=";
+Change it to this:
+const prog_char BannerGET[] PROGMEM = "GET /status/submitp.aspx?t1=";
+
+Save the code and then re-upload your controller code.
+Now, whenever you call the ReefAngel.Portal("name"); command, it will query your custom portal instead.
+
+
+You also need to reconfigure your wifi module to have it redirect to your IP and DNS instead of Reef Angel's.
+
+set ip host XXX.XXX.XXX.XXX
+set dns name my.domain.name
+
+Where XXX.XXX.XXX.XXX is the ip address of your server and my.domain.name is your custom domain name.
