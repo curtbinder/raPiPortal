@@ -8,9 +8,10 @@ The files inside this repository are designed to be placed in the /status/ subfo
 To setup properly, inside the Reef Angel libraries you need to make the following changes:
 
 Open RA_Wifi.h
-Locate this line:  const prog_char BannerGET[] PROGMEM = "GET /status/submitp.php?t1=";
+Locate this line:  
+        const prog_char BannerGET[] PROGMEM = "GET /status/submitp.aspx?t1=";
 Change it to this:
-const prog_char BannerGET[] PROGMEM = "GET /status/submitp.aspx?t1=";
+        const prog_char BannerGET[] PROGMEM = "GET /status/submitp.php?t1=";
 
 Save the code and then re-upload your controller code.
 Now, whenever you call the ReefAngel.Portal("name"); command, it will query your custom portal instead.
